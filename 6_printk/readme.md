@@ -1,3 +1,5 @@
+What happens if we continously call printk?
+
 Printk is implemented by using a ring buffer in the kernel with a size of __LOG_BUF_LEN bytes where __LOG_BUF_LEN equals (1 << CONFIG_LOG_BUF_SHIFT).
 
 See kernel/printk/printk.c file
