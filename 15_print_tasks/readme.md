@@ -1,24 +1,32 @@
-Linux kernel internally refers processes as tasks.  
-Kernel stores the list of processes in a circular doubly linked list called the task list.
+**1. Explain the technical concept:**
 
-Each task/process is represented in kernel with struct task_struct (defined in <linux/sched.h>).
+In the Linux kernel, processes are more often referred to as tasks. Each of these tasks is managed by a special data structure called `struct task_struct`. The kernel organizes all the tasks into a circular doubly linked list known as the task list. This structure enables efficient scheduling and management of tasks.
 
-This data structure (task_struct) is huge (1.7 Kilobytes) containing all the information about a specific process.
+The `task_struct` is a comprehensive data structure which contains a vast array of information about a specific process. Among the numerous fields in this structure, some of the most frequently accessed are the process name, process ID (PID), and process state.
 
-Let's write a module/device driver which reads the circular linked list and prints the following information for us:
+A process (or task) in Linux can be in various states, such as:
+- `TASK_RUNNING`: The process is either currently executing or in a run-queue waiting for its turn.
+- `TASK_INTERRUPTIBLE`: The process is in a sleep mode and can be awakened by signals.
+- `TASK_UNINTERRUPTIBLE`: The process is also in a sleep mode, but signals won't wake it up.
+- `__TASK_TRACED`: This indicates that a debugger is currently tracing the process.
+- `__TASK_STOPPED`: The process's execution is halted, which usually occurs when it receives specific signals or is under debugging.
 
-	-->	Process Name
+**2. Curious Questions:**
 
-	--> Process ID
+- **Q:** What is the data structure used by the Linux kernel to represent a task or process?
+  
+  **A:** The Linux kernel represents a task or process using the `struct task_struct` data structure.
 
-	--> Process State
+- **Q:** What is the difference between `TASK_INTERRUPTIBLE` and `TASK_UNINTERRUPTIBLE` states?
+  
+  **A:** Both are sleep states. The key difference is that a process in `TASK_INTERRUPTIBLE` can be awakened by signals, while a process in `TASK_UNINTERRUPTIBLE` will not wake up even if it receives a signal.
 
-Before that, we should know what are the different states a process can be:
+- **Q:** Why would a process be in the `__TASK_STOPPED` state?
 
-	TASK_RUNNING: Process is either currently running or on a run-queue waiting to run
-	TASK_INTERRUPTIBLE: Process is sleeping/blocked. Can be runnable/awaken by a signal
-	TASK_UNINTERRUPTIBLE: Similar to TASK_INTERRUPTIBLE, but does not wakeup on a signal
-	__TASK_TRACED: Process is traced by a debugger e.g. ptrace
-	__TASK_STOPPED: Process execution has stopped. This happens when the task receives SIGSTOP, SIGTSTP, SIGTTIN or SIGTTOU signal or if it receives any signal while it is being debugged.
+  **A:** A process would be in the `__TASK_STOPPED` state if its execution has been halted. This can occur when the task receives signals like SIGSTOP, SIGTSTP, SIGTTIN, or SIGTTOU or if it's being debugged.
 
+**3. Explain the concept in simple words so that I can remember it for my interview:**
 
+Imagine the Linux kernel as a busy manager in an office, and each process is like an employee. To keep track of everyone, the manager uses a special file for each employee, that's the `struct task_struct`. These files are placed in a ring binder (the circular doubly linked list) which the manager flips through to see who's doing what. 📋
+
+Just like employees can be working, on a break, or in a meeting, processes too have their states. `TASK_RUNNING` is like being at the desk working, `TASK_INTERRUPTIBLE` is like an employee on a break but ready to return if called, `TASK_UNINTERRUPTIBLE` is like being on a break with headphones on, ignoring any calls. `__TASK_TRACED` is like an employee getting guidance, and `__TASK_STOPPED` is when they've been asked to pause and wait. 🏢👩‍💼🔄
