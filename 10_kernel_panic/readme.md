@@ -33,3 +33,5 @@ By default, the kernel will not reboot on Kernel Panic. There are two ways by wh
 1. Kernel Command line: Add "panic=N" to the kernel command line, for the kernel to reboot after N seconds
 2. Proc File system: echo N > /proc/sys/kernel/panic , for kernel to reboot after N seconds on reboot. Note this setting is not persistent on reboot.
 
+Loading the module will either freeze or reboot the kernel depending on your kernel configuration
+
