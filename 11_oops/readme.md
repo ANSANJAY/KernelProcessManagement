@@ -1,123 +1,52 @@
-=====================================
-What is OOPS Message in Linux Kernel?
-=====================================
+**Understanding OOPS in the Linux Kernel**
 
-An OOPS is similar to segfault in user space. Kernel throws oops message when an exception such as accessing invalid memory location happens in the kernel code.
+---
 
-Upon OOPS, the kernel performs the following operations:
+**OOPS** in the Linux Kernel is what one could compare to an exception in higher-level languages, but since the kernel isn't allowed to have exceptions, we get an "oops".
 
-	Kills the offending process
-	Prints information which can help the developers to debug
-	Continues execution. Note: After oops, the system cannot be trusted further as the some of the locks or structures may not be cleaned up.
+---
 
+### What is an OOPS?
 
-An OOPS Message contains the following information:
-	Processor Status
-	Contents of the CPU Registers at the time of exception
-	Stack trace
-	Call Trace
+An **OOPS** is a deviation from normal operation in the Linux kernel. It essentially means the kernel detected some issue that it could not proceed from safely. When such a condition is detected, the kernel will print an error message (often on the console, and logged somewhere like `/var/log/kern.log`), try to kill off the offending process and then continue running.
 
+### When does it occur?
 
-Let's understand the oops message line by line
+It generally happens due to:
+- Dereferencing a NULL or invalid pointer.
+- Using memory after it has been freed.
+- Overrunning the end of a buffer.
+- Hardware issues causing memory corruption.
+- Kernel code bugs.
 
-[ 1086.248952] BUG: unable to handle kernel NULL pointer dereference at 0000000000000012
+### Why is it called an OOPS?
 
-The above line indicates the BUG which caused the OOPS message, in our case invalid access to memory location
+The terminology of "oops" is more colloquial. It's like the system saying, "Oops! I made a mistake."
 
-[ 1086.248954] IP: [<ffffffffc03de01e>] test_oops_init+0x1e/0x30 [test]
+---
 
-Instruction Pointer at the time of OOPS
+#### Key Points in an OOPS Message:
 
-[ 1086.248957] Oops: 0002 [#1] SMP
+1. **BUG Indicator**: This line gives a clue about the nature of the error. For instance, `unable to handle kernel NULL pointer dereference` means the kernel code tried to access a null pointer, which is a common programming mistake.
 
-The error code value (0002) is in Hex. Each bit has a significance of its own.
+2. **IP (Instruction Pointer)**: This tells you the exact location in code where the error happened.
 
-Bit 0:
-Value:  0 -> No Page Found
-Value: 1 -> Protection Fault
-Bit 1: 
-Value :0 -> Read
-Value:1 -> Write
-Bit 2:
-Value:0  -> Kernel
- Value:1 -> User-Mode
+3. **Error Code Value**: The error code value can be parsed to determine the nature of the fault. For instance, you've broken it down into its bit significance which helps diagnose the kind of error.
 
-[#1] is the number of times the oops occurred. Multiple oops can be triggered as a cascading effect of the first one.
+4. **Modules Linked In**: This is a list of all kernel modules that were loaded at the time. This can be useful if one suspects a faulty module. It's a shotgun approach, giving all of them, because pinpointing the exact one can be hard.
 
-We have value 0002 which is Page not found during write operation in kernel mode.
+5. **Tainted Flag**: The kernel uses tainting to mark that something has occurred that might have compromised the correctness of the kernel. The flags help in understanding the state of the kernel. 
 
-[ 1086.248959] Modules linked in: test(POE+) snd_ens1371 coretemp snd_ac97_codec gameport ac97_bus snd_pcm crct10dif_pclmul snd_seq_midi crc32_pclmul snd_seq_midi_event vmw_balloon aesni_intel aes_x86_64 lrw gf128mul glue_helper ablk_helper cryptd snd_rawmidi input_leds vmwgfx joydev serio_raw btusb ttm drm_kms_helper btrtl btbcm btintel drm snd_seq snd_seq_device snd_timer fb_sys_fops snd vmw_vmci syscopyarea sysfillrect soundcore sysimgblt i2c_piix4 shpchp nfit rfcomm bnep bluetooth nfsd auth_rpcgss nfs_acl nfs lockd grace sunrpc fscache 8250_fintek parport_pc ppdev mac_hid lp parport hid_generic usbhid hid psmouse mptspi mptscsih mptbase e1000 pata_acpi scsi_transport_spi vmw_pvscsi floppy vmxnet3 fjes
+6. **RIP (Register Instruction Pointer)**: This tells where the kernel code stopped. Basically, it's the address of the instruction the CPU was executing when the oops was triggered. 
 
-The kernel doesn't necessarily know which module to blame, so it is giving you all of them.
+7. **CPU Register Contents**: The state of all the registers at the time of the error. This can give clues as to what the CPU was doing.
 
-[ 1086.248977] CPU: 0 PID: 4442 Comm: insmod Tainted: P           OE   4.4.0-31-generic #50~14.04.1-Ubuntu
+8. **Stack Trace**: The contents of the memory stack. This provides context on the state of the execution leading up to the error.
 
-CPU 0 denotes which CPU the error occurred. Next is PID and process name causing OOPS.
+9. **Call Trace**: It shows the path of function calls that led to the oops, helping developers trace the execution path that led to the error.
 
-The tainted flag points to 'P' here. Each flag has its own meaning. A few other flags, and their meanings, picked up from kernel/panic.c :
-/**
- *  print_tainted - return a string to represent the kernel taint state.
- *
- *  'P' - Proprietary module has been loaded.
- *  'F' - Module has been forcibly loaded.
- *  'S' - SMP with CPUs not designed for SMP.
- *  'R' - User forced a module unload.
- *  'M' - System experienced a machine check exception.
- *  'B' - System has hit bad_page.
- *  'U' - Userspace-defined naughtiness.
- *  'D' - Kernel has oopsed before
- *  'A' - ACPI table overridden.
- *  'W' - Taint on warning.
- *  'C' - modules from drivers/staging are loaded.
- *  'I' - Working around severe firmware bug.
- *  'O' - Out-of-tree module has been loaded.
- *  'E' - Unsigned module has been loaded.
- *  'L' - A soft lockup has previously occurred.
- *  'K' - Kernel has been live patched.
- *
- *  The string is overwritten by the next call to print_tainted().
- */
+10. **Code Dump**: This is a dump of the binary machine code that was being executed. This can be useful for debugging, especially if the issue is related to a specific instruction.
 
-[ 1086.248979] RIP: 0010:[<ffffffffc03de01e>]  [<ffffffffc03de01e>] test_oops_init+0x1e/0x30 [test]
+---
 
-RIP is the CPU register containing the address of the instruction that is getting executed. 0x0010 comes from the code segment register.  test_oops_init+0x1e/0x30 is the symbol + offset/length.
-
-
-[ 1086.248981] RSP: 0018:ffff8802144e7cc0  EFLAGS: 00010292
-[ 1086.248981] RAX: 0000000000000017 RBX: ffffffff81c13080 RCX: 0000000000000000
-[ 1086.248982] RDX: 0000000000000001 RSI: ffff880236e0dc78 RDI: ffff880236e0dc78
-[ 1086.248982] RBP: ffff8802144e7cc0 R08: 706f6f5f74736574 R09: 203a74696e695f73
-[ 1086.248983] R10: 3a74696e695f7370 R11: 000000000000069a R12: ffff8800acc32760
-[ 1086.248984] R13: 0000000000000000 R14: ffffffffc03de000 R15: ffff8802144e7eb0
-[ 1086.248984] FS:  00007f13440e9740(0000) GS:ffff880236e00000(0000) knlGS:0000000000000000
-[ 1086.248986] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 1086.248987] CR2: 0000000000000012 CR3: 00000002255ad000 CR4: 00000000000406f0
-
-Dump of the contents of the CPU Registers.
-
-[ 1086.249006] Stack:
-[ 1086.249007]  ffff8802144e7d38 ffffffff8100213d ffff8802144e7eb0 ffff8802144e7d10
-[ 1086.249008]  0000000000000246 0000000000000002 ffffffff811dbf1d ffff880236803c00
-[ 1086.249009]  ffffffff81180f87 0000000000000018 000000001136cd17 ffffffffc03e0000
-
-The above is the stack trace
-
-[ 1086.249011] Call Trace:
-[ 1086.249019]  [<ffffffff8100213d>] do_one_initcall+0xcd/0x1f0
-[ 1086.249025]  [<ffffffff811dbf1d>] ? kmem_cache_alloc_trace+0x1ad/0x220
-[ 1086.249028]  [<ffffffff81180f87>] ? do_init_module+0x27/0x1d2
-[ 1086.249030]  [<ffffffff81180fc0>] do_init_module+0x60/0x1d2
-[ 1086.249033]  [<ffffffff8110224c>] load_module+0x141c/0x1b00
-[ 1086.249034]  [<ffffffff810fea40>] ? __symbol_put+0x40/0x40
-[ 1086.249037]  [<ffffffff81203551>] ? kernel_read+0x41/0x60
-[ 1086.249038]  [<ffffffff81102afe>] SYSC_finit_module+0x7e/0xa0
-[ 1086.249039]  [<ffffffff81102b3e>] SyS_finit_module+0xe/0x10
-[ 1086.249045]  [<ffffffff817f6f36>] entry_SYSCALL_64_fastpath+0x16/0x75
-
-
-The above is the call trace - list of the functions being called just before the OOPS message.
-
-[ 1086.249046] Code: <c7> 04 25 12 00 00 00 61 00 00 00 31 c0 5d c3 0f 1f 00 0f 1f 44 00
-
-The code is a hex-dump of the section of machine code that was being run at the time the oops occurred.
-
+In essence, an OOPS message is a treasure trove of information for kernel developers to diagnose what went wrong in the kernel. For a regular user, it's a sign that something is amiss, either with their hardware or with a piece of software they are using.
