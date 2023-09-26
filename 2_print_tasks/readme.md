@@ -25,7 +25,7 @@ A process (or task) in Linux can be in various states, such as:
 
   **A:** A process would be in the `__TASK_STOPPED` state if its execution has been halted. This can occur when the task receives signals like SIGSTOP, SIGTSTP, SIGTTIN, or SIGTTOU or if it's being debugged.
 
-**3. Explain the concept in simple words so that I can remember it for my interview:**
+**3. Explain the concept in simple words :**
 
 Imagine the Linux kernel as a busy manager in an office, and each process is like an employee. To keep track of everyone, the manager uses a special file for each employee, that's the `struct task_struct`. These files are placed in a ring binder (the circular doubly linked list) which the manager flips through to see who's doing what. 📋
 
