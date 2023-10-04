@@ -1,8 +1,8 @@
-## struct mm_struct 📘
+## struct mm_struct : Memory layout of a process 📘
 ---
 
 The Linux Kernel maintains information regarding the 
-- process address space in an object known as the memory descriptor (`struct mm_struct`). 
+- `process address space` in an object known as the memory descriptor (`struct mm_struct`). 
 - It includes details such as a 
 ---
 
@@ -29,6 +29,7 @@ The provided kernel module iterates over each task in the system, and when it fi
   -  memory address range
   -  permissions
   -  and any mapped files.
+
 ----
 
 ## 2. Curious Questions 🤔
@@ -79,3 +80,10 @@ Now, this provided code is like a city surveyor 🗺️
 This detailed survey 🌐 helps in understanding 
 - how each citizen (process) is utilizing their allocated space (memory) 
 - and what items (files) they are keeping in their dedicated rooms (memory regions).
+
+
+--- 
+
+# Access memory map of any process  `/proc/<PID>/maps`
+
+![](./2.png)
