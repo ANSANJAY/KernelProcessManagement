@@ -1,7 +1,15 @@
 ### 1. Explain the Technical Concept 📘
-The provided code snippet is a Linux kernel module that inspects the task states of the current task and its ancestors until it reaches the `init_task`. It utilizes the `current` macro to gain access to the `task_struct` of the currently executing task, which holds detailed information about the task, including its state, Process ID (PID), and command name (`comm`).
+The provided code snippet is a Linux kernel module that inspects the task states of the current task and its ancestors until it reaches the `init_task`.
 
-The function `get_task_state(long state)` is used to translate the numeric task state into a readable string, representing different possible states like `TASK_RUNNING`, `TASK_INTERRUPTIBLE`, etc., or returning "Unknown Type" if the state is not recognized.
+- It utilizes the `current` macro to gain access to the `task_struct` of the currently executing task, which holds detailed information about the `task`, including its `state`, `Process ID (PID), and command name (`comm`)`.
+
+The function `get_task_state(long state)` is used to translate the numeric task state into a readable string, representing different possible states like
+- `TASK_RUNNING`,
+- `TASK_INTERRUPTIBLE`, etc., 
+- or returning "Unknown Type" if the state is not recognized.
+
+---
+
 
 During the initialization of this module, it traverses the task's ancestry using `task->parent` and prints the command name, PID, and state of each ancestor task until it reaches the `init_task`, counting the number of processes traversed and displaying this count.
 
