@@ -1,10 +1,15 @@
 # **Tasks**
 
-In the Linux kernel, processes are more often referred to as tasks. Each of these tasks is managed by a special data structure called `struct task_struct`. 
+In the Linux kernel, `processes are more often referred to as tasks`. 
+
+- Each of these tasks is managed by a special data structure called `struct task_struct`. 
 - The kernel organizes all the tasks into a `circular doubly linked list ` known as the `task list`. 
 - This structure enables efficient scheduling and management of tasks.
 
 The `task_struct` is a comprehensive data structure which contains a vast array of information about a specific process.
+
+- Size of `task_struct` is about **1.3kb**.
+
 
 - Among the numerous fields in this structure, some of the most frequently accessed are the 
 ----
@@ -13,10 +18,13 @@ The `task_struct` is a comprehensive data structure which contains a vast array 
 - and process state.
 ---
 
+![](./Screenshot%20from%202023-10-03%2021-04-02.png)
+
+
 A process (or task) in Linux can be in various states, such as:
-- `TASK_RUNNING`: The process is either currently executing or in a run-queue waiting for its turn.
-- `TASK_INTERRUPTIBLE`: The process is in a sleep mode and can be awakened by signals.
-- `TASK_UNINTERRUPTIBLE`: The process is also in a sleep mode, but signals won't wake it up.
+- `TASK_RUNNING` **R**: The process is either currently executing or in a run-queue waiting for its turn.
+- `TASK_INTERRUPTIBLE` **S**: The process is in a `sleep mode` and can be awakened by signals.
+- `TASK_UNINTERRUPTIBLE` **D**: The process is also in a sleep mode, but signals won't wake it up.
 - `__TASK_TRACED`: This indicates that a debugger is currently tracing the process.
 - `__TASK_STOPPED`: The process's execution is halted, which usually occurs when it receives specific signals or is under debugging.
 
