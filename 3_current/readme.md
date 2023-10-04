@@ -1,10 +1,15 @@
-### 1. Explain the Technical Concept 📘
-In the context of the Linux Kernel, when developing a module, accessing information about the currently executing process is often crucial. The `task_struct` structure in Linux is pivotal as it holds all the information related to a process. 
+# task_struct 📘
+
+In the context of the Linux Kernel, when developing a module, accessing information about the currently executing process is often crucial. 
+
+- The `task_struct` structure in Linux is pivotal as it `holds all the information related to a process`. 
 
 To access the `task_struct` of the currently executing process, the kernel provides a macro named `current`.
+
 -  This macro gives a pointer to the `task_struct` of the process that is currently being executed, offering a simplified and direct way to access the myriad of process-specific information available in `task_struct`.
 
 Given that Linux runs on a multitude of architectures, this `current` macro has to be defined distinctly for each one because of the diverse ways different architectures handle and store process-related information. 
+
 - Some architectures opt to store this information in a register, while others store it at the bottom of the kernel stack of the process.
 
 ### 2. Curious Questions 🤔
