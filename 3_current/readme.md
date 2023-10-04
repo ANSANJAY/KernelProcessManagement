@@ -6,9 +6,13 @@ In the context of the Linux Kernel, when developing a module, accessing informat
 
 To access the `task_struct` of the currently executing process, the kernel provides a macro named `current`.
 
--  This macro gives a pointer to the `task_struct` of the process that is currently being executed, offering a simplified and direct way to access the myriad of process-specific information available in `task_struct`.
+-  This macro gives `a pointer to the `task_struct` of the process that is currently being executed`, offering a simplified and direct way to access the myriad of process-specific information available in `task_struct`.
 
 Given that Linux runs on a multitude of architectures, this `current` macro has to be defined distinctly for each one because of the diverse ways different architectures handle and store process-related information. 
+
+- since it is arch based 
+
+- it is defined in `asm/current`
 
 - Some architectures opt to store this information in a register, while others store it at the bottom of the kernel stack of the process.
 
