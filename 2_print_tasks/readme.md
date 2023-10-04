@@ -1,8 +1,17 @@
-**1. Explain the technical concept:**
+# **Tasks**
 
-In the Linux kernel, processes are more often referred to as tasks. Each of these tasks is managed by a special data structure called `struct task_struct`. The kernel organizes all the tasks into a circular doubly linked list known as the task list. This structure enables efficient scheduling and management of tasks.
+In the Linux kernel, processes are more often referred to as tasks. Each of these tasks is managed by a special data structure called `struct task_struct`. 
+- The kernel organizes all the tasks into a `circular doubly linked list ` known as the `task list`. 
+- This structure enables efficient scheduling and management of tasks.
 
-The `task_struct` is a comprehensive data structure which contains a vast array of information about a specific process. Among the numerous fields in this structure, some of the most frequently accessed are the process name, process ID (PID), and process state.
+The `task_struct` is a comprehensive data structure which contains a vast array of information about a specific process.
+
+- Among the numerous fields in this structure, some of the most frequently accessed are the 
+----
+- process name, 
+- process ID (PID), 
+- and process state.
+---
 
 A process (or task) in Linux can be in various states, such as:
 - `TASK_RUNNING`: The process is either currently executing or in a run-queue waiting for its turn.
